@@ -19,6 +19,7 @@
       align-items: center;
       height: 100vh;
       background-color: #e0f7df;
+      flex-direction: column;
     }
 
     .clock {
@@ -138,6 +139,42 @@
       }
     }
 
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center; /* Centriranje horizontalno */
+      align-items: center; /* Centriranje vertikalno */
+      width: 100%;
+    }
+
+    .button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #45a049;
+    }
+
+    .manual-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .manual-controls input {
+      width: 50px;
+      height: 35px;
+      text-align: center;
+      color: blacK;
+      border: 1.5px;
+      border-radius: 5px;
+      
+    }
   </style>
 </head>
 <body>
@@ -167,6 +204,17 @@
         <span>59</span>
       </div>
     </div>
+
+    <!-- Controls for manual adjustments -->
+    <div class="controls">
+      <div class="manual-controls">
+        <input type="number" id="manualHour" min="0" max="12" placeholder="Hour" />
+        <input type="number" id="manualMinute" min="0" max="59" placeholder="Minute" />
+        <input type="number" id="manualSecond" min="0" max="59" placeholder="Second" />
+      </div>
+      <button class="button" id="setManualTime">Set Time</button>
+      <button class="button" id="resetTime">Reset Time</button>
+    </div>
   </div>
 
   <script>
@@ -174,11 +222,15 @@
     const minuteHand = document.getElementById('minute');
     const secondHand = document.getElementById('second');
 
+    let manualHour = 0;
+    let manualMinute = 0;
+    let manualSecond = 0;
+
     function updateClock() {
       const now = new Date();
-      const hours = now.getHours() % 12;
-      const minutes = now.getMinutes();
-      const seconds = now.getSeconds();
+      const hours = manualHour || now.getHours() % 12;
+      const minutes = manualMinute || now.getMinutes();
+      const seconds = manualSecond || now.getSeconds();
 
       const hourRotation = (360 / 12) * hours + (minutes / 60) * 30;
       const minuteRotation = (360 / 60) * minutes;
@@ -205,7 +257,25 @@
       return Array.from({ length: 6 }, (_, i) => `<span style="--depth: ${i}">${second}</span>`).join('');
     }
 
+    // Set time manually based on input
+    document.getElementById('setManualTime').addEventListener('click', () => {
+      manualHour = parseInt(document.getElementById('manualHour').value) || 0;
+      manualMinute = parseInt(document.getElementById('manualMinute').value) || 0;
+      manualSecond = parseInt(document.getElementById('manualSecond').value) || 0;
+      updateClock();
+    });
+
+    // Reset time to current time
+    document.getElementById('resetTime').addEventListener('click', () => {
+      manualHour = 0;
+      manualMinute = 0;
+      manualSecond = 0;
+      updateClock();
+    });
+
+    // Update clock every second
     setInterval(updateClock, 1000);
+    updateClock();
   </script>
 </body>
 </html>
