@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analog Clock</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+      color: #ffffff;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #212121;
+    }
+
+    .clock {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .clock::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      z-index: 10;
+    }
+
+    .hand {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hand span {
+      position: absolute;
+      font-size: 20px;
+      color: white;
+    }
+
+    .hour {
+      height: 60%;
+    }
+
+    .minute {
+      height: 70%;
+    }
+
+    .second {
+      height: 90%;
+    }
+
+    .hour span {
+      font-size: calc(18px + 1 * var(--depth));
+      transform: translateY(calc(-47px * var(--depth)));
+      color: #ff3d58;
+    }
+
+    .minute span {
+      font-size: 16px;
+      transform: translateY(calc(-50px * var(--depth)));
+      font-family: 'Digital', sans-serif;
+      color: #00a6ff;
+    }
+
+    .second span {
+      font-size: calc(14px - 1 * var(--depth));
+      transform: translateY(calc(-57px * var(--depth)));
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <div class="clock">
+      <div class= "hand hour" id="hour">
+        <span>12</span>
+      </div>
+      <div class="hand minute" id="minute">
+        <span>59</span>
+      </div>
+      <div class="hand second" id="second">
+        <span>59</span>
+      
+      
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hourHand = document.getElementById('hour');
+    const minuteHand = document.getElementById('minute');
+    const secondHand = document.getElementById('second');
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours() % 12;
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      const hourRotation = (360 / 12) * hours + (minutes / 60) * 30;
+      const minuteRotation = (360 / 60) * minutes;
+      const secondRotation = (360 / 60) * seconds;
+
+      hourHand.style.transform = `rotate(${hourRotation}deg)`;
+      minuteHand.style.transform = `rotate(${minuteRotation}deg)`;
+      secondHand.style.transform = `rotate(${secondRotation}deg)`;
+
+      hourHand.innerHTML = generateHourNumbers(hours);
+      minuteHand.innerHTML = generateMinuteNumbers(minutes);
+      secondHand.innerHTML = generateSecondNumbers(seconds);
+    }
+
+    function generateHourNumbers(hour) {
+      return Array.from({ length: 6 }, (_, i) => `<span style="--depth: ${i}">${hour}</span>`).join('');
+    }
+
+    function generateMinuteNumbers(minute) {
+      return Array.from({ length: 6 }, (_, i) => `<span style="--depth: ${i}">${minute}</span>`).join('');
+    }
+
+    function generateSecondNumbers(second) {
+      return Array.from({ length: 6 }, (_, i) => `<span style="--depth: ${i}">${second}</span>`).join('');
+    }
+
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
